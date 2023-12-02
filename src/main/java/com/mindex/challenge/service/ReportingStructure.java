@@ -8,29 +8,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class ReportingStructure {
     private Employee employee;
+
     private int numberOfReports;
 
-    @Autowired
-    private EmployeeRepository employeeRepository;
-
-    public ReportingStructure(String employeeId){
-        this.employee = employeeRepository.findByEmployeeId(employeeId);
-        this.numberOfReports = getNumberOfReports(employeeId);
+    public Employee getEmployee() {
+        return employee;
     }
 
-    /*
-         //TODO JAVA DOCS AND FORMAT THEM
-     */
-    private int getNumberOfReports(String employeeId) {
-        Employee employee = employeeRepository.findByEmployeeId(employeeId);//LOOKUP EMPLOYEE BY ID
-        List<Employee> directReports = employee.getDirectReports();
-        int returnValue = 0;
-        if (directReports != null && !directReports.isEmpty()) {
-            // Assuming no circular dependencies
-            for (Employee e : directReports) {
-                returnValue += getNumberOfReports(e.getEmployeeId());
-            }
-        }
-        return returnValue;
+    public int getNumberOfReports() {
+        return numberOfReports;
+    }
+
+    public ReportingStructure(Employee employee, int numberOfReports){
+        this.employee = employee;
+        this.numberOfReports = numberOfReports;
     }
 }
