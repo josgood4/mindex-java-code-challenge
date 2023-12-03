@@ -1,4 +1,4 @@
-package com.mindex.challenge.service;
+package com.mindex.challenge.data;
 
 import java.util.List;
 

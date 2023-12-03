@@ -2,6 +2,7 @@ package com.mindex.challenge.service;
 
 import com.mindex.challenge.dao.EmployeeRepository;
 import com.mindex.challenge.data.Employee;
+import com.mindex.challenge.data.ReportingStructure;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,9 +41,8 @@ public class ReportingStructureService {
         List<Employee> directReports = employee.getDirectReports();
         int returnValue = 0;
         if (directReports != null && !directReports.isEmpty()) {
-            // Assuming no circular dependencies
+            // Assuming no circular directReports
             for (Employee e : directReports) {
-                LOG.debug("DIRECT REPORT WITH ID: {}", e.getEmployeeId());
                 returnValue++;
                 returnValue += getNumberOfReports(e.getEmployeeId());
             }
