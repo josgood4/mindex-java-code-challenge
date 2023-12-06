@@ -29,12 +29,6 @@ public class ChallengeApplicationTests {
 	private String compensationUrl;
 	private String compensationIdUrl;
 
-	@Autowired
-	private ReportingStructureService reportingStructureService;
-
-	@Autowired
-	private CompensationService compensationService;
-
 	@LocalServerPort
 	private int port;
 
@@ -51,14 +45,13 @@ public class ChallengeApplicationTests {
 
 	@Test
 	public void testReportingStructure() {
-		// Test Reporting Structure
 		/*
 		Create employees with the following structure:
 		  F
 		 /|\
-		E C D
-		  |\
-		  A B
+		C D E
+	    |\
+	    A B
 		 */
 		int[] numberOfReportsPerEmployee = {0,0,2,0,0,5};
 
@@ -77,7 +70,7 @@ public class ChallengeApplicationTests {
 			assertNotNull(employees[i].getEmployeeId());
 			ReportingStructure reportingStructure = restTemplate.getForEntity(reportingStructureUrl, ReportingStructure.class, employees[i].getEmployeeId()).getBody();
 			assertNotNull(reportingStructure);
-            assertEquals(reportingStructure.getNumberOfReports(), numberOfReportsPerEmployee[i]);
+            assertEquals(numberOfReportsPerEmployee[i], reportingStructure.getNumberOfReports());
 			assertEmployeeEquivalence(employees[i], reportingStructure.getEmployee());
 		}
 	}
@@ -108,7 +101,7 @@ public class ChallengeApplicationTests {
 		employee.setLastName(lastName);
 		employee.setDepartment(department);
 		employee.setPosition(position);
-        return restTemplate.postForEntity(employeeUrl, employee, Employee.class).getBody();
+		return restTemplate.postForEntity(employeeUrl, employee, Employee.class).getBody();
 	}
 
 	private Employee createEmployee(String firstName, String lastName, String department, String position, List<Employee> directReports) {
@@ -118,8 +111,7 @@ public class ChallengeApplicationTests {
 		employee.setDepartment(department);
 		employee.setPosition(position);
 		employee.setDirectReports(directReports);
-		Employee createdEmployee = restTemplate.postForEntity(employeeUrl, employee, Employee.class).getBody();
-		return createdEmployee;
+		return restTemplate.postForEntity(employeeUrl, employee, Employee.class).getBody();
 	}
 
 	private static void assertEmployeeEquivalence(Employee expected, Employee actual) {

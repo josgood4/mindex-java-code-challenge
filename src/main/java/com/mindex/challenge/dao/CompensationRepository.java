@@ -5,6 +5,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 
 public interface CompensationRepository extends MongoRepository<Compensation, String> {
-    @Query("{ 'employee.employeeId' : ?0 }")
+    @Query
     Compensation findCompensationByEmployeeEmployeeId(String employeeId);
 }

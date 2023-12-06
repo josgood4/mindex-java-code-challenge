@@ -35,7 +35,7 @@ public class EmployeeController {
 
     @PutMapping("/employee/{id}")
     public Employee update(@PathVariable String id, @RequestBody Employee employee) {
-        LOG.debug("Received employee create request for id [{}] and employee [{}]", id, employee);
+        LOG.debug("Received employee update request for id [{}] and employee [{}]", id, employee);
 
         employee.setEmployeeId(id);
         return employeeService.update(employee);
@@ -43,7 +43,7 @@ public class EmployeeController {
 
     @GetMapping("/reportingStructure/{id}")
     public ReportingStructure readReportingStructure(@PathVariable String id) {
-        LOG.debug("Received reportingStructure create request for id [{}]", id);
+        LOG.debug("Received reportingStructure read request for id [{}]", id);
 
         return reportingStructureService.read(id);
     }

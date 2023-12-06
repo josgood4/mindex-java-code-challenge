@@ -7,6 +7,8 @@ public class Compensation {
     int salary;
     LocalDate effectiveDate;
 
+    public Compensation() {}
+
     public Employee getEmployee() {
         return employee;
     }

@@ -19,8 +19,6 @@ public class ReportingStructureServiceImpl implements ReportingStructureService 
     @Autowired
     private EmployeeRepository employeeRepository;
 
-    // TODO docs
-    // TODO interface?
     @Override
     public ReportingStructure read(String id) {
         LOG.debug("Getting ReportingStructure for employee with id [{}]", id);
@@ -35,16 +33,16 @@ public class ReportingStructureServiceImpl implements ReportingStructureService 
         return reportingStructure;
     }
 
-    /*
-         //TODO JAVA DOCS AND FORMAT THEM
-     */
     private int getNumberOfReports(String employeeId) {
-        Employee employee = employeeRepository.findByEmployeeId(employeeId);//LOOKUP EMPLOYEE BY ID
+        // Look up employee by Id since that may be all that's saved in directReport list.
+        Employee employee = employeeRepository.findByEmployeeId(employeeId);
         List<Employee> directReports = employee.getDirectReports();
         int returnValue = 0;
         if (directReports != null && !directReports.isEmpty()) {
-            // Assuming no circular directReports
+            // Assuming no circular directReports, or else this would infinitely recurse.
             for (Employee e : directReports) {
+                // The returnValue will be the sum of getNumberOfReports for all employees under
+                //   current employee, plus each directReport immediately under the current employee.
                 returnValue++;
                 returnValue += getNumberOfReports(e.getEmployeeId());
             }
