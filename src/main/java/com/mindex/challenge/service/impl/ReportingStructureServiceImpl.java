@@ -41,8 +41,9 @@ public class ReportingStructureServiceImpl implements ReportingStructureService 
         if (directReports != null && !directReports.isEmpty()) {
             // Assuming no circular directReports, or else this would infinitely recurse.
             for (Employee e : directReports) {
-                // The returnValue will be the sum of getNumberOfReports for all employees under
-                //   current employee, plus each directReport immediately under the current employee.
+                // The returnValue will be equal to the sum of the following:
+                //   -> each directReport immediately under the current employee
+                //   -> getNumberOfReports value for all employees under the current employee
                 returnValue++;
                 returnValue += getNumberOfReports(e.getEmployeeId());
             }
