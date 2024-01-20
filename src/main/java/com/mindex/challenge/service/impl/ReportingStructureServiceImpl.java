@@ -46,6 +46,9 @@ public class ReportingStructureServiceImpl implements ReportingStructureService 
             for (Employee subEmployee : directReports) {
                 Employee fullSubEmployee =
                         employeeRepository.findByEmployeeId(subEmployee.getEmployeeId());
+                if (fullSubEmployee == null) {
+                    throw new RuntimeException("Employee id not found: " + subEmployee.getEmployeeId());
+                }
                 returnValue += calculateNumberOfReports(fullSubEmployee);
                 // Add fullSubEmployee after recursing so that its subs will be updated
                 upToDateSubs.add(fullSubEmployee);
