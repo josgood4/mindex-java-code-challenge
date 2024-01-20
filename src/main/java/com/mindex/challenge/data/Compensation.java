@@ -1,8 +1,11 @@
 package com.mindex.challenge.data;
 
+import org.springframework.data.annotation.Id;
+
 import java.time.LocalDate;
 
 public class Compensation {
+    @Id
     Employee employee;
     int salary;
     LocalDate effectiveDate;
