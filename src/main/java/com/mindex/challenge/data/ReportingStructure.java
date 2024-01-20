@@ -1,10 +1,7 @@
 package com.mindex.challenge.data;
 
-import java.util.List;
-
 import com.mindex.challenge.dao.EmployeeRepository;
 import com.mindex.challenge.data.Employee;
-import org.springframework.beans.factory.annotation.Autowired;
 
 public class ReportingStructure {
     private Employee employee;

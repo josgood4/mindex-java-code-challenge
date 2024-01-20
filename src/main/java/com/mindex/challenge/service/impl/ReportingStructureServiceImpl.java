@@ -9,44 +9,48 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class ReportingStructureServiceImpl implements ReportingStructureService {
-
     private static final Logger LOG = LoggerFactory.getLogger(ReportingStructureServiceImpl.class);
 
     @Autowired
     private EmployeeRepository employeeRepository;
 
     @Override
-    public ReportingStructure read(String id) {
-        LOG.debug("Getting ReportingStructure for employee with id [{}]", id);
+    public ReportingStructure read(String employeeId) {
+        LOG.debug("Getting ReportingStructure for employee with id [{}]", employeeId);
 
-        Employee employee = employeeRepository.findByEmployeeId(id);
+        Employee employee = employeeRepository.findByEmployeeId(employeeId);
         if (employee == null) {
-            throw new RuntimeException("Invalid employeeId: " + id);
+            throw new RuntimeException("Invalid employeeId: " + employeeId);
         }
 
-        ReportingStructure reportingStructure = new ReportingStructure(employee, getNumberOfReports(id));
+        int numReports = calculateNumberOfReports(employee);
 
-        return reportingStructure;
+        return new ReportingStructure(employee, numReports);
     }
 
-    private int getNumberOfReports(String employeeId) {
-        // Look up employee by Id since that may be all that's saved in directReport list.
-        Employee employee = employeeRepository.findByEmployeeId(employeeId);
+    private int calculateNumberOfReports(Employee employee) {
         List<Employee> directReports = employee.getDirectReports();
         int returnValue = 0;
+        // The numberOfReports will be equal to the sum of the following:
+        //   -> each directReport immediately under the current employee
+        //   -> numberOfReports value for all employees under the current employee
+        // Loop also builds out nested Employee structure to save in the ReportingStructure
         if (directReports != null && !directReports.isEmpty()) {
-            // Assuming no circular directReports, or else this would infinitely recurse.
-            for (Employee e : directReports) {
-                // The returnValue will be equal to the sum of the following:
-                //   -> each directReport immediately under the current employee
-                //   -> getNumberOfReports value for all employees under the current employee
-                returnValue++;
-                returnValue += getNumberOfReports(e.getEmployeeId());
+            returnValue = directReports.size();
+            List<Employee> upToDateSubs = new ArrayList<Employee>();
+            for (Employee subEmployee : directReports) {
+                Employee fullSubEmployee =
+                        employeeRepository.findByEmployeeId(subEmployee.getEmployeeId());
+                returnValue += calculateNumberOfReports(fullSubEmployee);
+                // Add fullSubEmployee after recursing so that its subs will be updated
+                upToDateSubs.add(fullSubEmployee);
             }
+            employee.setDirectReports(upToDateSubs);
         }
         return returnValue;
     }
